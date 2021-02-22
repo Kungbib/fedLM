@@ -14,10 +14,10 @@ def oscar_to_text(lang: str, out_fn: str) -> None:
         print(f"The oscar dataset with {lang} does not exist")
         return
 
-    for ttv in ds:
-        with open(f"{out_fn}.{ttv}.{lang}", "w") as fh:
-            for line in ds[ttv]:
-                print(line["text"], file=fh, end="\n\n")
+    # for ttv in ds:  # there is only train
+    with open(f"{out_fn}.{lang}", "w") as fh:
+        for line in ds["train"]:
+            print(line["text"], file=fh, end="\n\n")
     return
 
 
@@ -42,8 +42,8 @@ def opus100_to_text(lang: str, out_fn: str) -> None:
 if __name__ == "__main__":
     langs = ["sv", "no", "nb", "nn", "da"]
     corpora = ["oscar", "opus100"]  # cc100 open_subtitles
-    os.makedirs("oscar", exist_ok=True)
-    os.makedirs("opus100", exist_ok=True)
+    os.makedirs("../data/oscar", exist_ok=True)
+    # os.makedirs("../data/opus100", exist_ok=True)
     for lang in langs:
-        oscar_to_text(lang, "oscar/oscar")
-        opus100_to_text(lang, "opus100/opus100")
+        oscar_to_text(lang, "../data/oscar/oscar")
+        # opus100_to_text(lang, "../data/opus100/opus100")

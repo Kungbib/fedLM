@@ -1,8 +1,9 @@
 
 mkdir spieces
-D="spieces"
-wiki="../../wiki/wiki.ss"
-oscar="../../oscar/oscar.ss"
+F=$1
+D=$2
+wiki="${F}/wiki/wiki"
+oscar="${F}/oscar/oscar"
 
 # bash sentencepiece.sh $out $size $files
 
@@ -16,9 +17,9 @@ do
         do
             if [ $lang = "no" ]
             then
-                file="$file.$lang $file.nn" 
+                file="$file.$lang.ss $file.nn.ss" 
             else
-                file="$file.$lang"
+                file="$file.$lang.ss"
             fi
             out="$D/vocab.$lang.${file##*/}.$size"
             bash sentencepiece.sh $out $size $file
@@ -27,9 +28,9 @@ do
         out="$D/vocab.$lang.oscar+wiki.$size"
         if [ ${lang} = "no" ]
         then
-            files="$wiki.$lang $wiki.nn $oscar.$lang $oscar.nn" 
+            files="$wiki.$lang.ss $wiki.nn.ss $oscar.$lang.ss $oscar.nn.ss" 
         else
-            files="$wiki.$lang $oscar.$lang"
+            files="$wiki.$lang.ss $oscar.$lang.ss"
         fi
         bash sentencepiece.sh $out $size $files
     done
@@ -38,6 +39,6 @@ do
     for file in $wiki $oscar;
     do
         out="$D/vocab.sv+no+da.${file##*/}.$size"
-        bash sentencepiece.sh $out $size $file.sv $file.no $file.nn $file.da
+        bash sentencepiece.sh $out $size $file.sv.ss $file.no.ss $file.nn.ss $file.da.ss
     done
 done
