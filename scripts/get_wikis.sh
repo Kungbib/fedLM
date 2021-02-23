@@ -1,5 +1,8 @@
-mkdir wiki
-cd wiki
+# make and go to wiki dir
+DIR=`pwd`
+mkdir ../data/wiki
+cd ../data/wiki
+
 # Get the dumps
 echo "Downloading dumps"
 wget https://ftp.acc.umu.se/mirror/wikimedia.org/dumps/nnwiki/20210201/nnwiki-20210201-pages-articles.xml.bz2
@@ -30,10 +33,10 @@ cat svwiki/we/*/* > svwiki/we/all.jsonl
 
 # extra the texts from the json files
 echo "Run Json Extractor"
-python src/wiki_json_to_txt.py nnwiki/we/all.jsonl wiki.nn # nnwiki/nnwiki.txt
-python src/wiki_json_to_txt.py nowiki/we/all.jsonl wiki.no # nowiki/nowiki.txt
-python src/wiki_json_to_txt.py dawiki/we/all.jsonl wiki.da # dawiki/dawiki.txt
-python src/wiki_json_to_txt.py svwiki/we/all.jsonl wiki.sv # svwiki/svwiki.txt
+python $DIR/wiki_json_to_txt.py nnwiki/we/all.jsonl wiki.nn # nnwiki/nnwiki.txt
+python $DIR/wiki_json_to_txt.py nowiki/we/all.jsonl wiki.no # nowiki/nowiki.txt
+python $DIR/wiki_json_to_txt.py dawiki/we/all.jsonl wiki.da # dawiki/dawiki.txt
+python $DIR/wiki_json_to_txt.py svwiki/we/all.jsonl wiki.sv # svwiki/svwiki.txt
 
 # remove unnecessary files
 # for l in nn no da sv;

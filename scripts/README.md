@@ -18,6 +18,17 @@ For Wikipedia we first download the dumps, process them with **wikiextractor**
 and then extract the text from the `json` files to save the data into
 `data/wiki`.
 
+The version for **wikiextractor** is not in **pip** and has to be _cloned_ and
+installed from **github** in a reasonable directory.
+
+```bash
+git clone https://github.com/attardi/wikiextractor.git 
+cd wikiextractor
+python setup.py install
+```
+
+Then:
+
 ```bash
 bash get_wiki.sh
 ```
