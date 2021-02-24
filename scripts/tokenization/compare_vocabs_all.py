@@ -40,11 +40,16 @@ if __name__ == "__main__":
                 # compare(l1, f1, s1, l1, f2, s1, cache)
                 # compare(l1, f1, s2, l1, f2, s2, cache)
                 # compare(l1, f1, s1, l1, f2, s2, cache)
+                # compare(l1, f1, s1, l1, f1, s2, cache)
+                # compare(l1, f2, s1, l1, f2, s2, cache)
 
                 # different language same data
-                # compare(l1, f1, s1, l2, f1, s1, cache)
+                compare(l1, f1, s1, l2, f1, s1, cache)
                 compare(l1, f1, s2, l2, f1, s2, cache)
-                # compare(l1, f1, s1, l2, f1, s2, cache)
+                compare(l1, f1, s1, l2, f1, s2, cache)
+                compare(l1, f2, s1, l2, f2, s1, cache)
+                compare(l1, f2, s2, l2, f2, s2, cache)
+                compare(l1, f2, s1, l2, f2, s2, cache)
 
                 # different language different data
                 # compare(l1, f1, s1, l2, f2, s1, cache)

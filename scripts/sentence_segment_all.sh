@@ -12,12 +12,12 @@
 # wiki
 for l in nn no da sv;
 do
-    bash sentence_segment.sh ../data/wiki/${l}wiki/wiki.${l} $l ../wiki/wiki.${l}.ss;
+    bash sentence_segment.sh ../data/wiki/wiki.${l} $l ../data/wiki/wiki.${l}.ss;
 done
 
 
 # oscar
 for l in nn no da sv;
 do
-    bash sentence_segment.sh ../data/oscar/oscar.$l $l ../oscar/oscar.$l.ss;
+    bash sentence_segment.sh ../data/oscar/oscar.$l $l ../data/oscar/oscar.$l.ss;
 done
