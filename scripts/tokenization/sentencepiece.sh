@@ -11,4 +11,5 @@ echo "Vocabulary Size: $size"
 echo "Corpus files: $files"
 
 python3 spiece_tokenizer.py $out $size $files
-python3 sent2wordpiece.py $out.json -o $out.txt
+# python3 sent2wordpiece.py $out.json -o $out.txt
+python hfwp2gwp.py $out.json $out.txt
