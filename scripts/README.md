@@ -12,6 +12,10 @@ This will download the OSCAR data for no, nn, da, sv (uncomment da if
 necessary) and place the files into a new `data/oscar` folder in the main
 directory.
 
+Downloading via `datasets` has the "benefit" of caching the data in
+`.cache/huggingface/datasets`.
+This may result into disk problems and can be removed if necessary.
+
 ## Wikipedia Dumps
 
 For Wikipedia we first download the dumps, process them with **wikiextractor**

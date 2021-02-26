@@ -1,5 +1,3 @@
-
-mkdir spieces
 F=$1
 D=$2
 wiki="${F}/wiki/wiki"
@@ -40,5 +38,12 @@ do
     do
         out="$D/vocab.sv+no+da.${file##*/}.$size"
         bash sentencepiece.sh $out $size $file.sv.ss $file.no.ss $file.nn.ss $file.da.ss
+        out="$D/vocab.sv+no.${file##*/}.$size"
+        bash sentencepiece.sh $out $size $file.sv.ss $file.no.ss $file.nn.ss 
     done
+    out="$D/vocab.sv+no+da.oscar+wiki.$size"                                    
+    bash sentencepiece.sh $out $size $oscar.sv.ss $oscar.no.ss $oscar.nn.ss $oscar.da.ss $wiki.sv.ss $wiki.no.ss $wiki.nn.ss $wiki.da.ss                                                  
+     out="$D/vocab.sv+no.oscar+wiki.$size"                                    
+     bash sentencepiece.sh $out $size $oscar.sv.ss $oscar.no.ss $oscar.nn.ss $wiki.sv.ss $wiki.no.ss $wiki.nn.ss                                                  
+
 done

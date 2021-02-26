@@ -27,7 +27,7 @@ def compare(l1, f1, s1, l2, f2, s2, cache):
 
 if __name__ == "__main__":
 
-    langs = ["sv", "no", "da", "sv+no+da"]
+    langs = ["sv", "no", "da", "sv+no+da", "sv+no"]
     files = ["wiki", "oscar", "oscar+wiki"]
     sizes = ["30000", "50000"]
 
@@ -37,16 +37,21 @@ if __name__ == "__main__":
         for (f1, f2) in it.combinations(files, 2):
             for (s1, s2) in it.combinations(sizes, 2):
                 # same language
-                # compare(l1, f1, s1, l1, f2, s1, cache)
-                # compare(l1, f1, s2, l1, f2, s2, cache)
-                # compare(l1, f1, s1, l1, f2, s2, cache)
+                compare(l1, f1, s1, l1, f2, s1, cache)
+                compare(l1, f1, s2, l1, f2, s2, cache)
+                compare(l1, f1, s1, l1, f2, s2, cache)
+                compare(l1, f1, s1, l1, f1, s2, cache)
+                compare(l1, f2, s1, l1, f2, s2, cache)
 
                 # different language same data
-                # compare(l1, f1, s1, l2, f1, s1, cache)
+                compare(l1, f1, s1, l2, f1, s1, cache)
                 compare(l1, f1, s2, l2, f1, s2, cache)
-                # compare(l1, f1, s1, l2, f1, s2, cache)
+                compare(l1, f1, s1, l2, f1, s2, cache)
+                compare(l1, f2, s1, l2, f2, s1, cache)
+                compare(l1, f2, s2, l2, f2, s2, cache)
+                compare(l1, f2, s1, l2, f2, s2, cache)
 
                 # different language different data
-                # compare(l1, f1, s1, l2, f2, s1, cache)
-                # compare(l1, f1, s2, l2, f2, s2, cache)
-                # compare(l1, f1, s1, l2, f2, s2, cache)
+                compare(l1, f1, s1, l2, f2, s1, cache)
+                compare(l1, f1, s2, l2, f2, s2, cache)
+                compare(l1, f1, s1, l2, f2, s2, cache)
