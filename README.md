@@ -25,7 +25,7 @@ docker-compose -f docker-compose.yaml build
 and run it interactively
 
 ```bash
-docker-compose run --rm electra bash
+docker-compose run -u $(id -u):$(id -g) --rm electra bash
 ```
 
 ### Pretraining
