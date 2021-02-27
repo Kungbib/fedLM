@@ -11,6 +11,7 @@ services:
         runtime: nvidia
         volumes:
             - ${PWD}:/electra
+            - ../data:/data
         command: ls -ltrh
         deploy:
             resources:

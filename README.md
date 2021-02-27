@@ -4,6 +4,8 @@ A federated LM
 
 ## Electra
 
+### Setup
+
 Clone from original source
 
 ```bash
@@ -25,3 +27,11 @@ and run it interactively
 ```bash
 docker-compose run --rm electra bash
 ```
+
+### Pretraining
+
+```bash
+python3 build_pretraining_dataset.py --corpus-dir ../data/${lang} --vocab-file ../data/vocab.${lang}.txt --output-dir ./data/ --max-seq-length 128 --num-processes 15 --blanks-separate-docs True --do-lower-case
+```
+
+
