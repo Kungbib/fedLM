@@ -1,0 +1,29 @@
+version: "3.5"
+
+
+services:
+    electra:
+        build:
+            context: ${PWD}
+            dockerfile: ${PWD}/Dockerfile
+        working_dir: /electra
+        image: "electra:latest"
+        runtime: nvidia
+        volumes:
+            - ${PWD}:/electra
+            - ../data:/data
+        command: ls -ltrh
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                        - capabilities: [gpu]
+# services:
+#       test:
+#         image: tensorflow/tensorflow:latest-gpu
+#         command: python3 -c "import tensorflow as tf;tf.test.gpu_device_name()"
+#         deploy:
+#             resources:
+#                 reservations:
+#                     devices:
+#                         - capabilities: [gpu]
