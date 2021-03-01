@@ -1,5 +1,6 @@
 # FROM nvidia/cuda:10.2-base 
-FROM tensorflow/tensorflow:1.15.5-gpu 
+# FROM tensorflow/tensorflow:1.15.5-gpu 
+FROM nvcr.io/nvidia/tensorflow:21.02-tf1-py3
 # -ubuntu18.04
 
 ARG DEBIAN_FRONTEND=noninteractive

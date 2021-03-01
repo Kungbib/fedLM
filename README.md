@@ -47,3 +47,19 @@ python3 run_pretraining.py --data-dir data/ --model-name electra_small_$lang --h
 - kb-labb-1 Danish
 - kb-labb-2 Norwegian
 - kb-labb-3 Swedish
+
+#### Checkpoints @
+
+- 50% - 500k
+- 25% - 250k
+- 12.5% - 125k
+- 6.25% - 62.5k
+
+#### Time Estimates
+
+Strongly depends on GPU (yay RTX 3090).
+
+RTX 3090 : 13.5k / h
+RTX 2080 :  7.8k / h
+RTX 2060 :  ?.?k / h
+
