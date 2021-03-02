@@ -21,7 +21,7 @@ def validate(data_dir, model_name):
     conf.do_eval = True
 
     tf.logging.set_verbosity(tf.logging.ERROR)
-    ret = train_or_eval(conf)
+    ret = train_or_eval(conf, device='cpu')
     report = {
         "classification_report": 'unevaluated',
         "loss": float(ret['loss']),
