@@ -3,11 +3,17 @@ services:
   client:
     environment:
       - GET_HOSTS_FROM=dns
-    image: "scaleoutsystems/mnist-client:latest"
+    image: "electra-client:latest"
+    runtime: nvidia
     build:
       context: .
     working_dir: /app
+    runtime: nvidia
     command: /bin/bash -c "fedn run client -in fedn-network.yaml"
     volumes:
       - ./data:/app/data
-
+    deploy:
+        resources:
+            reservations:
+                devices:
+                    - capabilities: [gpu]
