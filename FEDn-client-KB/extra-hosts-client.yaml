@@ -2,5 +2,5 @@ version: '3.3'
 services:
     client:
         extra_hosts:
-            combiner1: 10.10.73.2
+            combiner: 10.10.73.2
 
