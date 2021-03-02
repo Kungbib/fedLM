@@ -389,7 +389,7 @@ def model_fn_builder(config: configure_pretraining.PretrainingConfig):
   return model_fn
 
 
-def train_or_eval(config: configure_pretraining.PretrainingConfig):
+def train_or_eval(config: configure_pretraining.PretrainingConfig, device='gpu'):
   """Run pre-training or evaluate the pre-trained model."""
   if config.do_train == config.do_eval:
     raise ValueError("Exactly one of `do_train` or `do_eval` must be True.")
@@ -414,6 +414,12 @@ def train_or_eval(config: configure_pretraining.PretrainingConfig):
       save_checkpoints_steps=config.save_checkpoints_steps,
       keep_checkpoint_max=config.keep_checkpoint_max,
       tpu_config=tpu_config)
+
+  if device == 'cpu':
+    run_config = run_config.replace(
+        session_config=tf.ConfigProto(log_device_placement=True,
+                                      device_count={'GPU': 0}))
+
   model_fn = model_fn_builder(config=config)
   estimator = tf.estimator.tpu.TPUEstimator(
       use_tpu=config.use_tpu,
