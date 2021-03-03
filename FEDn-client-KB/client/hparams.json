@@ -30,5 +30,5 @@
   "temperature" : 1.0,
   "max_seq_length" : 128,
   "train_batch_size" : 128,
-  "eval_batch_size" : 128,
+  "eval_batch_size" : 128
 }
