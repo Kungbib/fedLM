@@ -2,6 +2,7 @@ from __future__ import print_function
 import tensorflow as tf
 import yaml
 import sys
+import json
 sys.path.append('scripts/electra')
 from run_pretraining import train_or_eval
 import configure_pretraining
@@ -16,11 +17,12 @@ def train(data_dir, model_name, settings):
 
     global_step = get_global_step(data_dir, model_name)
 
-    hparams = {
-        "num_train_steps": global_step + settings['num_train_steps'],
-        #"save_checkpoints_steps": 10,
-        "train_batch_size": settings['train_batch_size']
-    }
+    with open(settings.hparams) as fh:
+        hparams = json.load(fh)
+    # overwrite hparams with settings
+    for setting in settings:
+        if setting in hparams:
+            hparams[setting] = settings[setting]
 
     tf.logging.set_verbosity(tf.logging.ERROR)
     train_or_eval(configure_pretraining.PretrainingConfig(

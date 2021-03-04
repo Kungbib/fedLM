@@ -9,14 +9,17 @@ import configure_pretraining
 from fedn.utils.pytorchhelper import PytorchHelper
 from scripts.clienthelper_tfestimator import load_weights_to_model, get_weights_from_model
 
-def validate(data_dir, model_name):
+def validate(data_dir, model_name, settings):
     print("-- RUNNING VALIDATE --", flush=True)
 
     # hparams = {"num_eval_steps": 1}#, "train_batch_size": 128}
     with open(settings.hparams) as fh:
         hparams = json.load(fh)
     
-
+    # overwrite hparams with settings
+    for setting in settings:
+        if setting in hparams:
+            hparams[setting] = settings[setting]
     conf = configure_pretraining.PretrainingConfig(
         model_name, data_dir, **hparams)
 
@@ -47,7 +50,7 @@ if __name__ == '__main__':
     weights = helper.load_model(sys.argv[1])
 
     load_weights_to_model(weights, data_dir, model_name)
-    report = validate(data_dir, model_name)
+    report = validate(data_dir, model_name, settings)
     print("report: ", report)
     print("sys.argv[2]: ", sys.argv[2])
     with open(sys.argv[2], "w") as fh:
