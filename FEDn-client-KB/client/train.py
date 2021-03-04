@@ -2,7 +2,7 @@ from __future__ import print_function
 import tensorflow as tf
 import yaml
 import sys
-sys.path.append('scripts/electra_script')
+sys.path.append('scripts/electra')
 from run_pretraining import train_or_eval
 import configure_pretraining
 from fedn.utils.pytorchhelper import PytorchHelper
@@ -10,9 +10,6 @@ from scripts.clienthelper_tfestimator import load_weights_to_model, get_weights_
 
 def train(data_dir, model_name, settings, client_settings):
     print("-- RUNNING TRAINING --", flush=True)
-    import os
-    arr = os.listdir(data_dir)
-    print(arr)
 
     global_step = get_global_step(data_dir, model_name)
 
@@ -29,7 +26,7 @@ def train(data_dir, model_name, settings, client_settings):
     print("global_step: ", global_step)
     hparams = {
         "num_train_steps": global_step + num_train_steps,
-        "save_checkpoints_steps": 10,
+        # "save_checkpoints_steps": 10,
         "train_batch_size": train_batch_size
     }
 
@@ -55,8 +52,8 @@ if __name__ == '__main__':
         except yaml.YAMLError as e:
             raise(e)
     # TODO: define model_name and data_dir in settings
-    model_name = 'electra_small_owt'
-    data_dir = '/app/data'
+    model_name = settings["model_name"]
+    data_dir = settings["data"]
 
     helper = PytorchHelper()
     weights = helper.load_model(sys.argv[1])

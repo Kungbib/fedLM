@@ -4,6 +4,10 @@ bias: 0.7
 # Parameters for local training
 train_batch_size: 128
 num_train_steps: 100
+hparams: /app/data/hparams.json
+data: /app/data
+vocab: /app/data/vocab.sv+no.txt
+model_name: electra_small_sv+no
 
 #Device settings
 device: cuda

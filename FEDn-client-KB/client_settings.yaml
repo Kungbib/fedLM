@@ -3,10 +3,10 @@
 bias: 0.7
 # Parameters for local training
 train_batch_size: 32
-num_train_steps: 400
+num_train_steps: 100
 
 # Parameters for local validation
-eval_batch_size: 128
+eval_batch_size: 32
 num_eval_steps: 20
 
 #Device settings

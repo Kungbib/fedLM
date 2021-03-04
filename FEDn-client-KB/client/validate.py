@@ -3,7 +3,7 @@ import tensorflow as tf
 import yaml
 import sys
 import json
-sys.path.append('scripts/electra_script')
+sys.path.append('scripts/electra')
 from run_pretraining import train_or_eval
 import configure_pretraining
 from fedn.utils.pytorchhelper import PytorchHelper
@@ -15,6 +15,9 @@ def validate(data_dir, model_name, client_settings):
 
 
     hparams = {"num_eval_steps": client_settings['num_eval_steps'], "eval_batch_size": client_settings['eval_batch_size']}
+    with open(settings.hparams) as fh:
+        hparams = json.load(fh)
+    
 
     conf = configure_pretraining.PretrainingConfig(
         model_name, data_dir, **hparams)
@@ -38,9 +41,15 @@ if __name__ == '__main__':
             client_settings = dict(yaml.safe_load(fh))
         except yaml.YAMLError as e:
             raise(e)
-    # TODO: define model_name and data_dir in settings
-    model_name = 'electra_small_owt'
-    data_dir = '/app/data'
+
+    with open('settings.yaml', 'r') as fh:
+        try:
+            settings = dict(yaml.safe_load(fh))
+        except yaml.YAMLError as e:
+            raise(e)
+
+    model_name = settings["model_name"] 
+    data_dir = settings["data"] 
 
     helper = PytorchHelper()
     weights = helper.load_model(sys.argv[1])
