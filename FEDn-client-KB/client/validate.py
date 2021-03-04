@@ -9,10 +9,12 @@ import configure_pretraining
 from fedn.utils.pytorchhelper import PytorchHelper
 from scripts.clienthelper_tfestimator import load_weights_to_model, get_weights_from_model
 
-def validate(data_dir, model_name, settings):
+
+def validate(data_dir, model_name, settings, client_settings):
     print("-- RUNNING VALIDATE --", flush=True)
 
-    # hparams = {"num_eval_steps": 1}#, "train_batch_size": 128}
+
+
     with open(settings.hparams) as fh:
         hparams = json.load(fh)
     
@@ -20,6 +22,8 @@ def validate(data_dir, model_name, settings):
     for setting in settings:
         if setting in hparams:
             hparams[setting] = settings[setting]
+    
+
     conf = configure_pretraining.PretrainingConfig(
         model_name, data_dir, **hparams)
 
@@ -37,12 +41,19 @@ def validate(data_dir, model_name, settings):
 
 if __name__ == '__main__':
 
+    with open('/app/client_settings.yaml', 'r') as fh:
+        try:
+            client_settings = dict(yaml.safe_load(fh))
+        except yaml.YAMLError as e:
+            raise(e)
+
     with open('settings.yaml', 'r') as fh:
         try:
             settings = dict(yaml.safe_load(fh))
         except yaml.YAMLError as e:
             raise(e)
     # TODO: define model_name and data_dir in settings
+
     model_name = settings["model_name"] 
     data_dir = settings["data"] 
 
@@ -50,7 +61,7 @@ if __name__ == '__main__':
     weights = helper.load_model(sys.argv[1])
 
     load_weights_to_model(weights, data_dir, model_name)
-    report = validate(data_dir, model_name, settings)
+    report = validate(data_dir, model_name, settings, client_settings)
     print("report: ", report)
     print("sys.argv[2]: ", sys.argv[2])
     with open(sys.argv[2], "w") as fh:
