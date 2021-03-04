@@ -11,7 +11,7 @@ services:
     command: /bin/bash -c "fedn run client -in fedn-network.yaml"
     volumes:
       - ./data:/app/data
-      - ./client_settings.yaml:/app/client_settings.yaml
+      - ./settings.yaml:/app/settings.yaml
 
     deploy:
         resources:

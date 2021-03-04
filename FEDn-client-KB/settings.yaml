@@ -1,0 +1,22 @@
+
+# How much to bias the client data samples towards certain classes (non-IID data partitions)
+bias: 0.7
+# Parameters for local training
+train_batch_size: 128
+num_train_steps: 100
+
+# Path variables
+hparams: /app/data/hparams.json
+data: /app/data
+vocab: /app/data/vocab.txt
+model_name: electra_small_sv+no
+pretrain_tfrecords: "/app/data/pretrain_data.tfrecord*"
+results_dir: /app/data/results
+
+# Parameters for local validation
+eval_batch_size: 128
+num_eval_steps: 100
+
+#Device settings
+device: cuda
+val_device: cpu

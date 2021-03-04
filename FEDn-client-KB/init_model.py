@@ -1,8 +1,10 @@
 import sys
 import json
-sys.path.append('client/scripts/electra')
+import yaml
 
-from client.scripts.clienthelper_tfestimator import create_graph, get_weights_from_model
+from .client.src.clienthelper_tfestimator import (create_graph,
+                                                  get_weights_from_model
+                                                  )
 from fedn.utils.pytorchhelper import PytorchHelper
 
 if __name__ == '__main__':
@@ -26,5 +28,3 @@ if __name__ == '__main__':
     weights = get_weights_from_model(data_dir, model_name)
     helper = PytorchHelper()
     helper.save_model(weights, outfile_name)
-
-
