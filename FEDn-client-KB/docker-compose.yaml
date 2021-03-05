@@ -12,6 +12,7 @@ services:
     volumes:
       - ./data:/app/data
       - ./settings.yaml:/app/settings.yaml
+      - .:/app/
 
     deploy:
         resources:

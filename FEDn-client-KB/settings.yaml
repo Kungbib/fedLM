@@ -8,15 +8,16 @@ num_train_steps: 100
 # Path variables
 hparams: /app/data/hparams.json
 data: /app/data
-vocab: /app/data/vocab.txt
-model_name: electra_small_sv+no
-pretrain_tfrecords: "/app/data/pretrain_data.tfrecord*"
+vocab: /app/data/vocab.no.txt
+vocab_size: 31000
+model_name: electra_small_no
+pretrain_tfrecords: /app/data/pretrain_data.tfrecord*
 results_dir: /app/data/results
 
 # Parameters for local validation
-eval_batch_size: 128
-num_eval_steps: 100
+eval_batch_size: 32  # 128
+num_eval_steps: 20  # 100
 
 #Device settings
 device: cuda
-val_device: cpu
+val_device: cuda

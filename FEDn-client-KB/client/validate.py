@@ -2,17 +2,18 @@ import tensorflow as tf
 import yaml
 import sys
 import json
-# sys.path.append('src/electra')
-from .src.electra.run_pretraining import train_or_eval
-from .src.electra import configure_pretraining
+
+sys.path.append('src/electra')
+from run_pretraining import train_or_eval
+import configure_pretraining
 from fedn.utils.pytorchhelper import PytorchHelper
-from .src.clienthelper_tfestimator import load_weights_to_model
+from src.clienthelper_tfestimator import load_weights_to_model
 
 
 def validate(data_dir, model_name, settings):
     print("-- RUNNING VALIDATE --", flush=True)
 
-    with open(settings.hparams) as fh:
+    with open(settings["hparams"]) as fh:
         hparams = json.load(fh)
 
     # overwrite hparams with settings
@@ -50,7 +51,7 @@ if __name__ == '__main__':
     helper = PytorchHelper()
     weights = helper.load_model(sys.argv[1])
 
-    load_weights_to_model(weights, data_dir, model_name)
+    load_weights_to_model(weights, data_dir, model_name, settings["hparams"])
     report = validate(data_dir, model_name, settings)
     print("report: ", report)
     print("sys.argv[2]: ", sys.argv[2])

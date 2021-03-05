@@ -1,19 +1,23 @@
 import tensorflow as tf
 import time
 import os
-from .electra.run_pretraining import train_or_eval
-from .electra import configure_pretraining
+import sys
 import json
 
+sys.path.append('src/electra')
+sys.path.append('client/src/electra')
+from run_pretraining import train_or_eval
+import configure_pretraining
 
-def load_weights_to_model(weights, data_dir, modelname):
+
+def load_weights_to_model(weights, data_dir, modelname, hparams_fn):
 
     t0 = time.time()
 
     CHECKPOINT_DIR = data_dir + '/models/' + modelname
 
     if not os.path.isdir(CHECKPOINT_DIR):
-        create_graph(data_dir, modelname)
+        create_graph(data_dir, modelname, hparams_fn)
     checkpoint = tf.train.get_checkpoint_state(CHECKPOINT_DIR)
 
     with tf.Session() as sess:
@@ -26,7 +30,7 @@ def load_weights_to_model(weights, data_dir, modelname):
             try:
                 weights_updated += [w.assign(weights[w.name])]
             except Exception as e:
-                print(f"found Exception {e} while updating weights in load_weights_to_model")
+                # print(f"found Exception {e} while updating weights in load_weights_to_model")
                 pass
 
         # Load global step separately and ensure it is loaded to the model as an int.
@@ -40,7 +44,7 @@ def load_weights_to_model(weights, data_dir, modelname):
             with open("metadata.json", "w") as fh:
                 fh.write(json.dumps(data))
         except Exception as e:
-            print(f"found Exception {e} while further updating weights in load_weights_to_model")
+            # print(f"found Exception {e} while further updating weights in load_weights_to_model")
             pass
 
         r = sess.run(weights_updated)
@@ -85,28 +89,28 @@ def create_graph(data_dir, model_name, hparams_fn):
     """Creates checkpoints and model dependent files to initate the electra model."""
     import os
     arr = os.listdir(data_dir)
-    print(arr)
+    # print(arr)
     with open(hparams_fn) as fh:
         hparams = json.load(fh)
-
+    hparams["num_train_steps"] = 1
     tf.logging.set_verbosity(tf.logging.ERROR)
     train_or_eval(configure_pretraining.PretrainingConfig(
         model_name, data_dir, **hparams))
 
 
-def get_global_step(data_dir, modelname):
+def get_global_step(data_dir, modelname, hparams_fn):
 
     try:
         with open("metadata.json") as json_file:
             data = json.load(json_file)
             global_step = data["global_step"]
     except Exception as e:
-        print(f"loading metadata.json in get_global_step causing Exception {e}")
-        print("This is expected and I continue...")
+        # print(f"loading metadata.json in get_global_step causing Exception {e}")
+        # print("This is expected and I continue...")
         CHECKPOINT_DIR = data_dir + '/models/' + modelname
 
         if not os.path.isdir(CHECKPOINT_DIR):
-            create_graph(data_dir, modelname)
+            create_graph(data_dir, modelname, hparams_fn)
         checkpoint = tf.train.get_checkpoint_state(CHECKPOINT_DIR)
 
         with tf.Session() as sess:
