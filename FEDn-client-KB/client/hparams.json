@@ -17,6 +17,7 @@
   "num_eval_steps" : 100,
   "keep_checkpoint_max" : 5,
   "embedding_size" : 128,
+  "vocab_file" : "vocab.txt",
   "vocab_size" : 31000,
   "do_lower_case" : true,
   "uniform_generator" : false,

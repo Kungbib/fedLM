@@ -102,7 +102,8 @@ def create_graph(settings):
     with open(settings["hparams"]) as fh:
         hparams = json.load(fh)
     for setting in settings:
-        hparams[setting] = settings[setting]
+        if setting in hparams:
+            hparams[setting] = settings[setting]
     hparams["num_train_steps"] = 1
     data_dir = settings["data_dir"]
     model_name = settings["model_name"]

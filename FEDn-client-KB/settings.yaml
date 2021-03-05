@@ -6,9 +6,9 @@ train_batch_size: 128
 num_train_steps: 100
 
 # Path variables
-hparams: /app/data/hparams.json
-data: /app/data
-vocab: /app/data/vocab.no.txt
+hparams: /app/client/hparams.json
+data_dir: /app/data
+vocab_file: /app/data/vocab.no.txt
 vocab_size: 31000
 model_name: electra_small_no
 pretrain_tfrecords: /app/data/pretrain_data.tfrecord*
@@ -20,4 +20,4 @@ num_eval_steps: 20  # 100
 
 #Device settings
 device: cuda
-val_device: cuda
+val_device: cpu
