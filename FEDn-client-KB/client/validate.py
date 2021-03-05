@@ -18,8 +18,8 @@ def validate(data_dir, model_name, settings):
 
     # overwrite hparams with settings
     for setting in settings:
-        if setting in hparams:
-            hparams[setting] = settings[setting]
+        # if setting in hparams:
+        hparams[setting] = settings[setting]
 
     conf = configure_pretraining.PretrainingConfig(
         model_name, data_dir, **hparams)

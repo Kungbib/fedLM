@@ -93,8 +93,7 @@ def create_graph(data_dir, model_name, settings):
     with open(settings["hparams"]) as fh:
         hparams = json.load(fh)
     for setting in settings:
-        if setting in hparams:
-            hparams[setting] = settings[setting]
+        hparams[setting] = settings[setting]
     hparams["num_train_steps"] = 1
     tf.logging.set_verbosity(tf.logging.ERROR)
     train_or_eval(configure_pretraining.PretrainingConfig(

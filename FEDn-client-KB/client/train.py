@@ -22,8 +22,8 @@ def train(data_dir, model_name, settings):
         hparams = json.load(fh)
     # overwrite hparams with settings
     for setting in settings:
-        if setting in hparams:
-            hparams[setting] = settings[setting]
+        # if setting in hparams:
+        hparams[setting] = settings[setting]
 
     print("global_step: ", global_step)
     hparams["num_train_steps"] = global_step + settings["num_train_steps"]
