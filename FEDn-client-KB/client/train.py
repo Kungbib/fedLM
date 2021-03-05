@@ -16,7 +16,7 @@ from src.clienthelper_tfestimator import (load_weights_to_model,
 def train(data_dir, model_name, settings):
     print("-- RUNNING TRAINING --", flush=True)
 
-    global_step = get_global_step(data_dir, model_name, settings["hparams"])
+    global_step = get_global_step(data_dir, model_name, settings)
 
     with open(settings["hparams"]) as fh:
         hparams = json.load(fh)
@@ -45,13 +45,12 @@ if __name__ == '__main__':
             raise(e)
     model_name = settings["model_name"]
     data_dir = settings["data"]
-    hparams_fn = settings["hparams"]
 
     helper = PytorchHelper()
     weights = helper.load_model(sys.argv[1])
 
-    load_weights_to_model(weights, data_dir, model_name, hparams_fn)
+    load_weights_to_model(weights, data_dir, model_name, settings)
     train(data_dir, model_name, settings)
-    weights = get_weights_from_model(data_dir, model_name, hparams_fn)
+    weights = get_weights_from_model(data_dir, model_name, settings)
     ret = helper.save_model(weights, sys.argv[2])
     print("saved as: ", ret)

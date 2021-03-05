@@ -51,7 +51,7 @@ if __name__ == '__main__':
     helper = PytorchHelper()
     weights = helper.load_model(sys.argv[1])
 
-    load_weights_to_model(weights, data_dir, model_name, settings["hparams"])
+    load_weights_to_model(weights, data_dir, model_name, settings)
     report = validate(data_dir, model_name, settings)
     print("report: ", report)
     print("sys.argv[2]: ", sys.argv[2])

@@ -1,5 +1,3 @@
-import sys
-import json
 import yaml
 
 from client.src.clienthelper_tfestimator import (create_graph,
@@ -17,7 +15,7 @@ if __name__ == '__main__':
     model_name = settings["model_name"]
     print(model_name, type(model_name))
     outfile_name = 'electra_seed'
-    create_graph(data_dir, model_name, settings["hparams"])
-    weights = get_weights_from_model(data_dir, model_name, settings["hparams"])
+    create_graph(data_dir, model_name, settings)
+    weights = get_weights_from_model(data_dir, model_name, settings)
     helper = PytorchHelper()
     helper.save_model(weights, outfile_name)
