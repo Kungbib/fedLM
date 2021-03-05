@@ -17,8 +17,8 @@ def validate(settings):
         hparams = json.load(fh)
     # overwrite hparams with settings
     for setting in settings:
-        # if setting in hparams:
-        hparams[setting] = settings[setting]
+        if setting in hparams:
+            hparams[setting] = settings[setting]
     data_dir = settings["data_dir"]
     model_name = settings["model_name"]
 
