@@ -13,10 +13,12 @@ from src.clienthelper_tfestimator import (load_weights_to_model,
                                           )
 
 
-def train(data_dir, model_name, settings):
+def train(settings):
     print("-- RUNNING TRAINING --", flush=True)
 
-    global_step = get_global_step(data_dir, model_name, settings)
+    data_dir = settings["data_dir"]
+    model_name = settings["model_name"]
+    global_step = get_global_step(settings)
 
     with open(settings["hparams"]) as fh:
         hparams = json.load(fh)
@@ -43,14 +45,14 @@ if __name__ == '__main__':
             print("settings: ", settings)
         except yaml.YAMLError as e:
             raise(e)
-    model_name = settings["model_name"]
-    data_dir = settings["data"]
+    # model_name = settings["model_name"]
+    # data_dir = settings["data"]
 
     helper = PytorchHelper()
     weights = helper.load_model(sys.argv[1])
 
-    load_weights_to_model(weights, data_dir, model_name, settings)
-    train(data_dir, model_name, settings)
-    weights = get_weights_from_model(data_dir, model_name, settings)
+    load_weights_to_model(weights, settings)
+    train(settings)
+    weights = get_weights_from_model(settings)
     ret = helper.save_model(weights, sys.argv[2])
     print("saved as: ", ret)

@@ -9,22 +9,29 @@ sys.path.append('client/src/electra')
 from run_pretraining import train_or_eval
 import configure_pretraining
 
+GLOBAL = True  # if True then federate also optimizer variables
+if GLOBAL:
+    PASSABLE_VARIABLES = tf.GraphKeys.GLOBAL_VARIABLES
+else:
+    PASSABLE_VARIABLES = tf.GraphKeys.TRAINABLE_VARIABLES
 
-def load_weights_to_model(weights, data_dir, modelname, settings):
+
+def load_weights_to_model(weights, settings):
 
     t0 = time.time()
-
-    CHECKPOINT_DIR = data_dir + '/models/' + modelname
+    data_dir = settings["data_dir"]
+    model_name = settings["model_name"]
+    CHECKPOINT_DIR = data_dir + '/models/' + model_name
 
     if not os.path.isdir(CHECKPOINT_DIR):
-        create_graph(data_dir, modelname, settings)
+        create_graph(settings)
     checkpoint = tf.train.get_checkpoint_state(CHECKPOINT_DIR)
 
     with tf.Session() as sess:
         saver = tf.train.import_meta_graph(checkpoint.model_checkpoint_path + '.meta')
         saver.restore(sess, checkpoint.model_checkpoint_path)
 
-        old_weights = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)
+        old_weights = tf.get_collection(PASSABLE_VARIABLES)
         weights_updated = []
         for w in old_weights:
             try:
@@ -57,21 +64,23 @@ def load_weights_to_model(weights, data_dir, modelname, settings):
     return 0
 
 
-def get_weights_from_model(data_dir, modelname, settings):
+def get_weights_from_model(settings):
     t0 = time.time()
     tf.reset_default_graph()
 
-    CHECKPOINT_DIR = data_dir + '/models/' + modelname
+    data_dir = settings["data_dir"]
+    model_name = settings["model_name"]
+    CHECKPOINT_DIR = data_dir + '/models/' + model_name
 
     if not os.path.isdir(CHECKPOINT_DIR):
-        create_graph(data_dir, modelname, settings)
+        create_graph(settings)
     checkpoint = tf.train.get_checkpoint_state(CHECKPOINT_DIR)
 
     with tf.Session() as sess:
         saver = tf.train.import_meta_graph(checkpoint.model_checkpoint_path + '.meta')
         saver.restore(sess, checkpoint.model_checkpoint_path)
 
-        weights = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES)
+        weights = tf.get_collection(PASSABLE_VARIABLES)
         weights_ = sess.run(weights)
         global_step_ = [v for v in tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES) if v.name == 'global_step:0'][0]
         global_step = sess.run(global_step_)
@@ -85,7 +94,7 @@ def get_weights_from_model(data_dir, modelname, settings):
     return stored_weights
 
 
-def create_graph(data_dir, model_name, settings):
+def create_graph(settings):
     """Creates checkpoints and model dependent files to initate the electra model."""
     # import os
     # arr = os.listdir(data_dir)
@@ -95,12 +104,14 @@ def create_graph(data_dir, model_name, settings):
     for setting in settings:
         hparams[setting] = settings[setting]
     hparams["num_train_steps"] = 1
+    data_dir = settings["data_dir"]
+    model_name = settings["model_name"]
     tf.logging.set_verbosity(tf.logging.ERROR)
     train_or_eval(configure_pretraining.PretrainingConfig(
         model_name, data_dir, **hparams))
 
 
-def get_global_step(data_dir, modelname, settings):
+def get_global_step(settings):
 
     try:
         with open("metadata.json") as json_file:
@@ -109,10 +120,12 @@ def get_global_step(data_dir, modelname, settings):
     except Exception as e:
         # print(f"loading metadata.json in get_global_step causing Exception {e}")
         # print("This is expected and I continue...")
-        CHECKPOINT_DIR = data_dir + '/models/' + modelname
+        data_dir = settings["data_dir"]
+        model_name = settings["model_name"]
+        CHECKPOINT_DIR = data_dir + '/models/' + model_name
 
         if not os.path.isdir(CHECKPOINT_DIR):
-            create_graph(data_dir, modelname, settings)
+            create_graph(settings)
         checkpoint = tf.train.get_checkpoint_state(CHECKPOINT_DIR)
 
         with tf.Session() as sess:
