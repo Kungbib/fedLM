@@ -69,7 +69,7 @@ def write_report(report, out_arg):
 
 def read_report(out_arg):
     with open(out_arg, "r") as fh:
-        report = json.loads(fh)
+        report = json.load(fh)
     return report
 
 
