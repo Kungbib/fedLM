@@ -3,21 +3,21 @@
 bias: 0.7
 # Parameters for local training
 train_batch_size: 128
-num_train_steps: 100
+num_train_steps: 1000
 
 # Path variables
 hparams: /app/client/hparams.json
 data_dir: /app/data
-vocab_file: /app/data/vocab.no.txt
+vocab_file: /app/data/vocab.sv+no.txt
 vocab_size: 31000
-model_name: electra_small_no
+model_name: electra_small_sv+no
 pretrain_tfrecords: /app/data/pretrain_data.tfrecord*
 results_dir: /app/data/results
 
 # Parameters for local validation
-eval_batch_size: 32  # 128
-num_eval_steps: 20  # 100
+eval_batch_size: 128
+num_eval_steps: 100
 
 #Device settings
 device: cuda
-val_device: cpu
+val_device: cuda  # cpu
