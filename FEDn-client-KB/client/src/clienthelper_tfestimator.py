@@ -1,4 +1,5 @@
-import tensorflow.compat.v1 as tf
+# import tensorflow.compat.v1 as tf
+import tensorflow  as tf
 import time
 import os
 import sys

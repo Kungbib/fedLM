@@ -1,4 +1,5 @@
-import tensorflow.v1.compat as tf
+# import tensorflow.v1.compat as tf
+import tensorflow as tf
 import yaml
 import sys
 import json
