@@ -38,20 +38,58 @@ def validate(settings):
     return report
 
 
-if __name__ == '__main__':
+def _make_report(settings):
+    report = validate(settings)
+    print("report: ", report)
+    return report
 
+
+def make_report(in_arg):
     with open('/app/settings.yaml', 'r') as fh:
         try:
             settings = dict(yaml.safe_load(fh))
         except yaml.YAMLError as e:
             raise(e)
-
     helper = PytorchHelper()
-    weights = helper.load_model(sys.argv[1])
+    weights = helper.load_model(in_arg)
 
     load_weights_to_model(weights, settings)
-    report = validate(settings)
-    print("report: ", report)
-    print("sys.argv[2]: ", sys.argv[2])
-    with open(sys.argv[2], "w") as fh:
+    # report = validate(settings)
+    # print("report: ", report)
+    # return report
+    return _make_report(settings)
+
+
+def write_report(report, out_arg):
+    print("sys.argv[2]: ", out_arg)
+    with open(out_arg, "w") as fh:
         fh.write(json.dumps(report))
+
+
+def read_report(out_arg):
+    with open(out_arg, "r") as fh:
+        report = json.loads(fh)
+    return report
+
+
+if __name__ == '__main__':
+
+    # with open('/app/settings.yaml', 'r') as fh:
+    #     try:
+    #         settings = dict(yaml.safe_load(fh))
+    #     except yaml.YAMLError as e:
+    #         raise(e)
+
+    # helper = PytorchHelper()
+    # weights = helper.load_model(sys.argv[1])
+
+    # load_weights_to_model(weights, settings)
+    # report = validate(settings)
+    # print("report: ", report)
+    # print("sys.argv[2]: ", sys.argv[2])
+    # with open(sys.argv[2], "w") as fh:
+    #     fh.write(json.dumps(report))
+
+    # report = make_report(sys.argv[1])
+    report = read_report("/app/last_validate.json")
+    write_report(report, sys.argv[2])

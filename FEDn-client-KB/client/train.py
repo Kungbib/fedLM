@@ -2,6 +2,7 @@ import tensorflow.v1.compat as tf
 import yaml
 import sys
 import json
+import validate as vldt
 
 sys.path.append('src/electra')
 from run_pretraining import train_or_eval
@@ -54,5 +55,9 @@ if __name__ == '__main__':
     load_weights_to_model(weights, settings)
     train(settings)
     weights = get_weights_from_model(settings)
+    # NOTE Silly validate hack
+    report = vldt._make_report(settings)
+    vldt.write_report(report, "/app/last_validate.json")
+
     ret = helper.save_model(weights, sys.argv[2])
     print("saved as: ", ret)
