@@ -1,11 +1,12 @@
 import matplotlib.pyplot as plt
 import json
 
+
 def plot(fn: str) -> None:
     with open(fn) as fh:
         fc = json.load(fh)
-    ll = [l[2] for l in fc]
-    plt.plot(ll)
+    tt, ss, ll = zip(*fc)
+    plt.plot(ss, ll)
     plt.show()
 
 
