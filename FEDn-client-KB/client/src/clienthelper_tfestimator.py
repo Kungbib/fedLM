@@ -49,7 +49,7 @@ def load_weights_to_model(weights, settings):
             data = {
                 "global_step": int(global_step)
             }
-            with open("metadata.json", "w") as fh:
+            with open(CHECKPOINT_DIR + "/" + "metadata.json", "w") as fh:
                 fh.write(json.dumps(data))
         except Exception as e:
             # print(f"found Exception {e} while further updating weights in load_weights_to_model")
@@ -116,7 +116,7 @@ def create_graph(settings):
 def get_global_step(settings):
 
     try:
-        with open("metadata.json") as json_file:
+        with open(CHECKPOINT_DIR + "/" + "metadata.json") as json_file:
             data = json.load(json_file)
             global_step = data["global_step"]
     except Exception as e:
@@ -139,7 +139,7 @@ def get_global_step(settings):
             data = {
                 "global_step": int(global_step)
             }
-            with open("metadata.json", "w") as fh:
+            with open(CHECKPOINT_DIR + "/" + "metadata.json", "w") as fh:
 
                 fh.write(json.dumps(data))
     return global_step
