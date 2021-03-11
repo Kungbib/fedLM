@@ -18,7 +18,7 @@ if __name__ == '__main__':
             raise(e)
 
     helper = PytorchHelper()
-    prev_model = "package/electra_seed.npz"
+    prev_model = "/app/electra_seed.npz"
     for i in range(10_001):
         weights = helper.load_model(prev_model)
 

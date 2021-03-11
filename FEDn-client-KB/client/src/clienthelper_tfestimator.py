@@ -52,7 +52,7 @@ def load_weights_to_model(weights, settings):
             with open(CHECKPOINT_DIR + "/" + "metadata.json", "w") as fh:
                 fh.write(json.dumps(data))
         except Exception as e:
-            # print(f"found Exception {e} while further updating weights in load_weights_to_model")
+            print(f"found Exception {e} while further updating weights in load_weights_to_model")
             pass
 
         r = sess.run(weights_updated)
@@ -114,17 +114,18 @@ def create_graph(settings):
 
 
 def get_global_step(settings):
+    data_dir = settings["data_dir"]
+    model_name = settings["model_name"]
+    CHECKPOINT_DIR = data_dir + '/models/' + model_name
+    print(f"getting global step from {CHECKPOINT_DIR}")
 
     try:
         with open(CHECKPOINT_DIR + "/" + "metadata.json") as json_file:
             data = json.load(json_file)
             global_step = data["global_step"]
     except Exception as e:
-        # print(f"loading metadata.json in get_global_step causing Exception {e}")
-        # print("This is expected and I continue...")
-        data_dir = settings["data_dir"]
-        model_name = settings["model_name"]
-        CHECKPOINT_DIR = data_dir + '/models/' + model_name
+        print(f"loading metadata.json in get_global_step causing Exception {e}")
+        print("This is expected and I continue...")
 
         if not os.path.isdir(CHECKPOINT_DIR):
             create_graph(settings)
