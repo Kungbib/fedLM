@@ -3,7 +3,7 @@
 bias: 0.7
 # Parameters for local training
 train_batch_size: 128
-num_train_steps: 1000
+num_train_steps: 100
 
 # Path variables
 hparams: /app/client/hparams.json

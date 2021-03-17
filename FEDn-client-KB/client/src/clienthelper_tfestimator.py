@@ -38,7 +38,7 @@ def load_weights_to_model(weights, settings):
             try:
                 weights_updated += [w.assign(weights[w.name])]
             except Exception as e:
-                # print(f"found Exception {e} while updating weights in load_weights_to_model")
+                print(f"found Exception {e} while updating weights in load_weights_to_model")
                 pass
 
         # Load global step separately and ensure it is loaded to the model as an int.
@@ -125,7 +125,7 @@ def get_global_step(settings):
             global_step = data["global_step"]
     except Exception as e:
         print(f"loading metadata.json in get_global_step causing Exception {e}")
-        print("This is expected and I continue...")
+        print("This is expected because there was no metadata.json and I continue...")
 
         if not os.path.isdir(CHECKPOINT_DIR):
             create_graph(settings)

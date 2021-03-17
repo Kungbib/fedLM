@@ -33,6 +33,7 @@ def create_optimizer(
     layerwise_lr_decay_power=-1, n_transformer_layers=None):
   """Creates an optimizer and training op."""
   global_step = tf.train.get_or_create_global_step()
+  num_train_steps = 1_000_000
   learning_rate = tf.train.polynomial_decay(
       learning_rate,
       global_step,
