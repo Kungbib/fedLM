@@ -16,7 +16,9 @@
 
 ## Training
 
-- optimization variables: yes or no?
+- 100 steps, 1000 steps....
+- after finding optimal step number
+    - optimization variables: yes or no?
 
 ## Other
 
