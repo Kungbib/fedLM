@@ -24,3 +24,4 @@
 
 - centralized vs federated optimizer
 - What happens after warmup??
+- validation before training <- done
