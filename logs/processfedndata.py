@@ -53,7 +53,7 @@ def plot_status(results,
             if start is None:
                 start = time
             time_passed = time - start
-            xs[name] = time_passed.total_seconds()
+            xs[name] = time_passed.total_seconds() / 60
         xs = xs.values()
     else:
         xs = np.arange(0, len(ys) * steps_per_round, steps_per_round)
@@ -81,9 +81,8 @@ if __name__ == "__main__":
     import sys
     data1 = read_status(sys.argv[1])
     print_status(data1, int(sys.argv[2]), "loss")
-    time_spent = False
-    smooth = True
-    plot_status(data1, int(sys.argv[2]), "loss", time=time_spent, smooth=smooth)
+    time_spent = True if sys.argv[5] == "time" else False
+    plot_status(data1, int(sys.argv[2]), "loss", time=time_spent, smooth=False)
     data2 = read_status(sys.argv[3])
     plot_status(data2, int(sys.argv[4]), "loss", time=time_spent, smooth=False)
     plt.show()
