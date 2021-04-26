@@ -11,14 +11,17 @@
   - ???
 - fixed number of fine-tuning epochs
 - [superlim](https://spraakbanken.gu.se/projekt/superlim-en-svensk-testmangd-for-sprakmodeller/swedishglue-benchmark)
-- send overlim data
-- finetuning from electra
 
 ## Training
 
+- 100 steps, 1000 steps, 2k, 5k
+- after finding optimal step number
 - optimization variables: yes or no?
 
 ## Other
 
 - centralized vs federated optimizer
-- What happens after warmup??
+- ~~validation before training~~ 
+- log eval score for the global and local model to see the performance difference
+- compare centralized log with fedn-log
+- extend fedn-logs
