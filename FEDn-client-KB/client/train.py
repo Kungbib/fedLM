@@ -54,11 +54,13 @@ if __name__ == '__main__':
     weights = helper.load_model(sys.argv[1])
 
     load_weights_to_model(weights, settings)
+    # NOTE Silly validate hack
+    if get_global_step(settings) % 1000 == 1:  # we have one extra step from init
+        report = vldt._make_report(settings)
+        vldt.write_report(report, "/app/last_validate.json")
+
     train(settings)
     weights = get_weights_from_model(settings)
-    # NOTE Silly validate hack
-    report = vldt._make_report(settings)
-    vldt.write_report(report, "/app/last_validate.json")
 
     ret = helper.save_model(weights, sys.argv[2])
     print("saved as: ", ret)
