@@ -164,9 +164,28 @@ parameters.
 
 ## Results
 
+To evaluate the impact of changing various hyper-parameters, we focus on the
+development of the loss function during training.
+While it seems easy to evaluate large language models, as one can simply use
+the GLUE or SuperGLUE benchmarks to get an overall performance evaluation,
+there are many tricks one needs to apply to gain better scores.
+Even simply changing the random seed can increase or decrease performance by
+multiple points.
+
+While we cannot evaluate downstream model performance, we clearly see how the
+training is affected.
+
 ### Number of Local Updates
 
+![alt text](../logs/round_lengths_steps.png "my title")
+
 ### Local vs. Global Optimizer
+
+![title](../figs/local_v_global_steps.png)
+![title](../figs/local_v_global_time.png)
+
+
+
 
 ## Continuation
 
@@ -175,3 +194,54 @@ parameters.
 - evaluation on downstream tasks
 - danish
 
+
+<!---
+### ÖverLim
+
+#### Swedish
+
+
+| Model                                     |   aggregated_g |   mnli |   mrpc |   qnli |    qqp |   rte   |    sst |   stsb |   wnli |
+|-------------------------------------------|----------------|--------|--------|--------|--------|---------|--------|--------|--------|
+| electra.no.small                          |         65.61% | 66.45% | 79.59% | 78.23% | 39.75% |  66.30% | 80.19% | 71.47% | 42.86% |
+| electra.sv.small                          |         66.76% | 69.27% | 79.15% | 78.29% | 39.50% |  66.30% | 82.73% | 67.42% | 51.43% |
+| electra.sv+no.small.centralized           |         66.95% | 69.25% | 78.53% | 78.80% | 39.20% |  67.39% | 82.27% | 71.56% | 48.57% |
+| electra.sv+no.small.federated             |         67.59% | 73.64% | 74.86% | 80.62% | 39.83% |  71.01% | 85.98% | 76.21% | 38.57% |
+| bert-base-swedish-cased                   |         72.63% | 81.55% | 81.52% | 87.59% | 43.12% |  77.17% | 92.35% | 84.89% | 32.86% |
+| bert-base-multilingual-cased              |         72.75% | 77.48% | 81.93% | 86.04% | 41.88% |  75.72% | 90.85% | 82.42% | 45.71% |
+| nb-bert-base                              |         73.36% | 80.44% | 81.99% | 86.82% | 41.77% |  78.62% | 90.96% | 83.38% | 42.86% |
+
+
+| Model                                     |   aggregated_s |   boolq |     cb |   copa |   rte   |
+|-------------------------------------------|----------------|---------|--------|--------|---------|
+| electra.sv.small                          |         50.31% |  62.57% | 36.77% | 49.37% |  52.54% |
+| nb-bert-base                              |         52.34% |  62.57% | 32.78% | 65.82% |  48.19% |
+| electra.sv+no.small.federated             |         53.97% |  62.54% | 56.51% | 44.30% |  52.54% |
+| electra.no.small                          |         54.86% |  62.57% | 56.60% | 43.04% |  57.25% |
+| electra.sv+no.small.centralized           |         59.76% |  62.57% | 65.16% | 54.43% |  56.88% |
+| bert-base-multilingual-cased              |         62.96% |  69.13% | 63.42% | 51.90% |  67.39% |
+| bert-base-swedish-cased                   |         64.53% |  68.71% | 73.73% | 49.37% |  66.30% |
+
+#### Norwegian
+
+| Model                                     |   aggregated_g |   mnli |   mrpc |   qnli |    qqp |   rte   |    sst |   stsb |   wnli |
+|-------------------------------------------|----------------|--------|--------|--------|--------|---------|--------|--------|--------|
+| electra.sv.small                          |         62.30% | 64.36% | 76.84% | 76.21% | 38.92% |  60.51% | 76.83% | 60.44% | 44.29% |
+| electra.sv+no.small.centralized           |         63.89% | 67.22% | 76.80% | 76.55% | 38.64% |  62.68% | 79.14% | 62.96% | 47.14% |
+| electra.no.small                          |         64.53% | 68.16% | 76.65% | 77.30% | 38.95% |  63.41% | 79.61% | 65.03% | 47.14% |
+| electra.sv+no.small.federated             |         66.47% | 70.08% | 76.91% | 79.43% | 39.31% |  63.04% | 81.69% | 68.45% | 52.86% |
+| bert-base-swedish-cased                   |         67.26% | 73.14% | 76.70% | 81.65% | 41.69% |  68.84% | 86.44% | 73.93% | 35.71% |
+| bert-base-multilingual-cased              |         68.99% | 73.57% | 80.61% | 83.37% | 41.83% |  65.94% | 87.49% | 76.26% | 42.86% |
+| nb-bert-base                              |         71.20% | 76.80% | 77.97% | 83.96% | 42.27% |  69.93% | 88.99% | 76.85% | 52.86% |
+
+|   Model                                   |   aggregated_s |   boolq |     cb |   copa |   rte   |
+|-------------------------------------------|----------------|---------|--------|--------|---------|
+| electra.sv+no.small.federated             |         50.32% |  62.86% | 37.59% | 49.37% |  51.45% |
+| electra.sv.small                          |         51.16% |  62.57% | 33.83% | 50.63% |  57.61% |
+| electra.no.small                          |         51.30% |  62.57% | 32.78% | 51.90% |  57.97% |
+| electra.sv+no.small.centralized           |         55.04% |  62.57% | 56.59% | 45.57% |  55.43% |
+| bert-base-multilingual-cased              |         56.32% |  67.22% | 47.12% | 49.37% |  61.59% |
+| bert-base-swedish-cased                   |         59.29% |  67.28% | 60.02% | 49.37% |  60.51% |
+| nb-bert-base                              |         64.41% |  66.04% | 68.87% | 60.76% |  61.96% |
+
+--->
