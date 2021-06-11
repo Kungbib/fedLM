@@ -1,28 +1,32 @@
 # A Federated Language Model
 
-We trained a bilingual Swedish-Norwegian ELECTRA language model in a federated
-setup, showcasing LM training when various corpora cannot be shared directly.
+We trained a bilingual Swedish-Norwegian
+[ELECTRA](https://github.com/google-research/electra) language model in
+a federated setup, showcasing LM training when various corpora cannot be shared
+directly.
 
 ## Introduction
 
 Large transformer-based language models (LMs) have come to dominate the
 state-of-the-art for many natural language processing (NLP) tasks.
-These models, such as BERT and GPT, require both large amounts of compute as
-well as large amounts of textual data.
+These [models](https://huggingface.co/transformers/summary.html), such as BERT
+and GPT, require both large amounts of compute as well as large amounts of
+textual data.
 Large tech companies that have been the driving force in the development of 
 these large and steadily growing LMs, scrape the internet to gather huge text
 corpora for many different genres.
-These datasets come however with some problems.
-Languages that are less common on the internet, will be underrepresented and
+These datasets however come with some problems.
+Languages that are less common on the internet will be underrepresented and
 the automatic classification of which language the text is actually in is not
 necessarily very accurate either.
 Due to the size of the data, manual checking is not feasible.
 Including any type of text scraped from the internet without checking its 
 content, will also include texts with undesirable views of racist,
 sexist, or similar nature that can induce certain biases into the final model.
-The National Library of Sweden (Kungliga Biblioteket -- KB) has access to vast
-amounts of digitized newspapers and other texts in Swedish, that we used to
-train a state-of-the-art Swedish BERT language model.
+The [National Library of Sweden](https://www.kb.se/) (Kungliga Biblioteket --
+KB) has access to vast amounts of digitized newspapers and other texts in
+Swedish, that we used to train a state-of-the-art [Swedish
+BERT](https://github.com/Kungbib/swedish-bert-models) language model.
 In contrast to text scraped from the internet, our dataset is much more
 controlled.
 While it would be ideal to share the data directly, we unfortunately cannot due
@@ -34,14 +38,17 @@ without directly sharing the data.
 Such a setup would allow multiple national libraries and other maintainers of
 private data, to collaborate in training multilingual LMs without having to 
 sort out potential legal problems, as no data is shared.
-We collaborate with _Scaleout_ and use their open-source FedML framework
-_FEDn_ to train a Swedish-Norwegian ELECTRA language model.
+We collaborate with [Scaleout](https://www.scaleoutsystems.com/) and use their
+open-source FedML framework [FEDn](https://github.com/scaleoutsystems/fedn) to
+train a Swedish-Norwegian ELECTRA language model.
 
 
 ## What is ELECTRA?
 
-ELECTRA is a transformer-based _masked language model_ (MLM) similar to its
-predecessor BERT.
+<img src="electra.jpg" width="200" height="auto" align="right" />
+
+[ELECTRA](https://arxiv.org/pdf/2003.10555.pdf) is a transformer-based _masked
+language model_ (MLM) similar to its predecessor BERT.
 In contrast to classical LMs, now often referred to as _causal language models_
 (CLMs), that are trained by predicting the next token in a sequence, an MLM is
 trained by reconstructing the original sequence given a corrupted input
@@ -57,6 +64,9 @@ By learning to predict missing tokens, the model learns to imitate not only the
 structure of language in form of fitting syntax, but also which words and
 phrases have similar meaning by the contexts they have been used in the
 dataset.
+
+<!--- ![title](electra.jpg) --->
+
 Given that only 15% of the input tokens are masked and thus used for training
 the model, this approach is somewhat inefficient.
 While the network structure of ELECTRA is essentially the same as BERT's, its
@@ -88,7 +98,10 @@ In contrast to this, __cross-silo__ involves few, more powerful machines that
 handle datasets that cannot be shared due to privacy concerns or legal
 restrictions.
 
-In the FedML framework FEDn, we have four different roles: i) controller,
+![title](HFedAvg.png)
+
+In the FedML framework [FEDn](https://arxiv.org/pdf/2103.00148.pdf), we have
+four different roles: i) controller,
 ii) reducer, iii) combiner, and iv) client.
 At the lowest level of this hierarchical structure, local models with local
 data are trained on multiple geographically distributed _clients_.
@@ -101,13 +114,13 @@ Finally, the _controller's_ responsibility is to coordinate the overall
 computation and to maintain the centralized models.
 
 The update scheme used to combine the local models into one global model is
-called _federated averaging_ (FedAvg), one of the most widely used methods for
-FedML.
+called [federated averaging (FedAvg)](https://arxiv.org/pdf/1602.05629.pdf),
+one of the most widely used methods for FedML.
 In each round the current version of the global model is distributed to the
-clients, that continue training using each their own data.
+clients that continue training using each their own data.
 After one local round of training the distributed clients' model-weights are
-sent back to server that simply averages the weights, while taking the number
-of local updates into account.
+sent back to the server that simply averages the weights, while taking the
+number of local updates into account.
 
 ## Setup
 
@@ -115,11 +128,12 @@ With the future goal to train a large Scandinavian transformer-based language
 model, we downscale the size of the model and data to be able to efficiently
 test different hyper-parameter settings.
 We choose to train a small ELECTRA model using publicly available data from the
-OSCAR corpus and Wikipedia, for Swedish, and Norwegian _bokmål_ and _nynorsk_.
-The Swedish corpus is with 27 GB about five times larger than the 
+[OSCAR corpus](https://oscar-corpus.com/) and Wikipedia, for Swedish, and
+Norwegian _bokmål_ and _nynorsk_.
+The Swedish corpus is with 27 GB, about five times larger than the 
 Norwegian corpus.
-This uneven distribution allows us to additionally investigate, whether an LM
-built on little data, can benefit from a similar language's data.
+This uneven distribution allows us to additionally investigate whether an LM
+built on little data can benefit from a similar language's data.
 
 Due to the rather small size of the small ELECTRA model, we were able to train
 using standard workstation GPUs.
@@ -167,32 +181,94 @@ parameters.
 To evaluate the impact of changing various hyper-parameters, we focus on the
 development of the loss function during training.
 While it seems easy to evaluate large language models, as one can simply use
-the GLUE or SuperGLUE benchmarks to get an overall performance evaluation,
-there are many tricks one needs to apply to gain better scores.
-Even simply changing the random seed can increase or decrease performance by
-multiple points.
+the [GLUE](https://gluebenchmark.com/) or
+[SuperGLUE](https://super.gluebenchmark.com/) benchmarks to get an overall
+performance evaluation, there are many tricks one needs to apply to gain better
+scores.
+Even simply changing the random seed can [increase or decrease
+performance](https://arxiv.org/pdf/2002.06305.pdf) by multiple points.
 
-While we cannot evaluate downstream model performance, we clearly see how the
+While we do not evaluate downstream model performance, we clearly see how the
 training is affected.
 
 ### Number of Local Updates
 
-![alt text](../logs/round_lengths_steps.png "my title")
+In our first set of experiments we investigate how various local round lengths
+affect the training progress.
+We try four different local round lengths, with 100, 1000, 2000, and 5000 
+gradient steps before recombining the models.
+
+![title](../logs/round_lengths_steps.png)
+
+While the loss decreases the most per steps taken when the model is updated as
+often as possible (i.e. 100 steps), it takes far longer than in the other
+setups to reach the same loss values.
+Increasing the local round length to 5000 gradient steps allows us to do the
+most gradient steps in the shortest amount of time, but results in the loss
+not decreasing as quickly as with for example 1000 steps per round.
+
+![title](../logs/round_lengths_time_long.png)
+
+In this scenario we finally settle for 1000 steps per round, giving us the best
+speed-performance trade-off.
+With real-world models being much larger than the one used in our experiments,
+it can be interesting to change the round length during training.
+Longer round length in the beginning allows the model to see more data, while
+shorter round lengths towards the end will help the model to converge.
 
 ### Local vs. Global Optimizer
 
+Using a more advanced optimizer such as
+[Adam](https://ruder.io/optimizing-gradient-descent/index.html#adam) is
+necessary when training models with parameters now regularly surpassing
+multiple billions.
+This means unfortunately that the number of parameters that we need to
+federate triples, which increases the communication overhead.
+In order to test whether it is enough to only federate the model parameters
+themselves while keeping the optimizer states local, we train our small
+ELECTRA model with the additional Adam parameters retaining their local states,
+and averaging them just as the regular model parameters.
+
 ![title](../figs/local_v_global_steps.png)
+
+We can see that averaging the optimization-specific parameters allows the loss
+to decrease further, without taking much more time.
+While keeping the optimization parameters local increases the speed a little
+bit (the green curve in the figure above is slightly longer), it is not enough
+to counteract the decrease in learning.
+
 ![title](../figs/local_v_global_time.png)
 
+These results show that keeping outdated optimization parameters to increase 
+the overall speed is not desirable.
+For larger models we might see a significant increase in speed, but it might
+then be a better idea to change the optimization algorithm to regular
+stochastic gradient descent, to avoid faulty inputs.
+Similarly to dynamically changing the round lengths, adding a smarter
+optimization algorithm towards the end can be a possibility.
 
 
 
 ## Continuation
 
-- huggingface API
-- bigger models
-- evaluation on downstream tasks
-- danish
+This project has given us some promising first results towards training large
+language models such as ELECTRA.
+Using a federated black-box approach as implemented in FEDn, gives us the 
+possibility to train models with other non-public data holders, but also gives
+others the possibility to train their models with our data.
+
+The models we trained are however only of one type and relatively small.
+We are working on implementing an interface to the [🤗
+Transformers](https://huggingface.co/transformers/) library, that will allow
+users to train LMs from scratch in a federated fashion, but also fine-tune
+these models using the same functionalities.
+We hope that training models larger than our small ELECTRA, will give us more
+insights into how long we should train locally and whether to change the 
+optimization strategy.
+
+With these pieces in place, we finally hope to train a large Scandinavian
+language model that combines data sources that so far could not have been
+combined.
 
 
 <!---
