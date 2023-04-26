@@ -3,11 +3,13 @@
 We trained a bilingual Swedish-Norwegian
 [ELECTRA](https://github.com/google-research/electra) language model in
 a federated setup, showcasing LM training when various corpora cannot be shared
-directly.
+directly. The main goal of the project was to validate the feasibility of the approch, 
+as well as to study some key numerical properties affecting the performance of the 
+FL process. 
 
 ## Introduction
 
-Large transformer-based language models (LMs) have come to dominate the
+Large transformer-based language models (LMs) have come to dominate 
 state-of-the-art for many natural language processing (NLP) tasks.
 These [models](https://huggingface.co/transformers/summary.html), such as BERT
 and GPT, require both large amounts of compute as well as large amounts of
@@ -28,20 +30,22 @@ KB) has access to vast amounts of digitized newspapers and other texts in
 Swedish, that we used to train a state-of-the-art [Swedish
 BERT](https://github.com/Kungbib/swedish-bert-models) language model.
 In contrast to text scraped from the internet, our dataset is much more
-controlled.
-While it would be ideal to share the data directly, we unfortunately cannot due
-to the copyright of the original owners of the individual texts.
+controlled. For that reason it is a valuable asset for reserarch on language modeling, but  
+due to the copyright of the original owners of the individual texts we are not able to directly share
+the data with external parties in the research community.
 
 In order to allow others to train new models with their own private and our
-private data, _federated machine learning_ (FedML) can be used to train models
-without directly sharing the data.
-Such a setup would allow multiple national libraries and other maintainers of
+private data, we are here exploring the use of _federated machine learning_ (FL). FL is a recent strategy that 
+allows the training of models without directly sharing or disclosing the data. Simply speaking, the 
+data never leaves the administrative control of the data provider, instead local model updates are computed 
+and combined to form a global, federated model. 
+
+Such a FL setup would allow multiple national libraries and other maintainers of
 private data, to collaborate in training multilingual LMs without having to 
 sort out potential legal problems, as no data is shared.
 We collaborate with [Scaleout](https://www.scaleoutsystems.com/) and use their
-open-source FedML framework [FEDn](https://github.com/scaleoutsystems/fedn) to
+open-source FL framework [FEDn](https://github.com/scaleoutsystems/fedn) to
 train a Swedish-Norwegian ELECTRA language model.
-
 
 ## What is ELECTRA?
 
@@ -78,7 +82,6 @@ This secondary model, the _generator_, is trained in tandem with the primary
 model, the _discriminator_, quite similar to generative adversarial networks
 (GANs).
 
-
 > __Input:__ The dog sat on the mat.
 >
 > __Output:__  ✔️ ❌ ✔️ ✔️ ✔️ ✔️
@@ -88,9 +91,9 @@ applying the MLM objective to every input token.
 
 ## What is Federated Machine Learning?
 
-Federated learning is a technique used, when a model needs to be trained on
-multiple datasets that cannot be centralized.
-There are two general usage scenarios for FedML cross-silo and cross-device.
+Federated learning is a technique used when a model needs to be trained on
+multiple datasets that cannot be pooled.
+There are two general usa-case scenarios for FedML: Cross-silo and cross-device.
 
 __Cross-device__ is a scenario where there are too many small devices, such as
 mobile or edge devices, that provide a constant stream of outputs.
@@ -100,29 +103,28 @@ restrictions.
 
 ![title](HFedAvg.png)
 
-In the FedML framework [FEDn](https://arxiv.org/pdf/2103.00148.pdf), we have
-four different roles: i) controller,
+The FedML framework [FEDn](https://arxiv.org/pdf/2103.00148.pdf) is desinged to support 
+scalable FL using a tiered, hierarchial architecutre. It is based on services taking 
+four principal roles: i) controller,
 ii) reducer, iii) combiner, and iv) client.
 At the lowest level of this hierarchical structure, local models with local
-data are trained on multiple geographically distributed _clients_.
+data are trained on multiple geographically distributed _client_ nodes.
 These local models are then, after a certain number of training updates, sent
 to one or more _combiners_ that coordinate the updates from their own subset of
 _clients_.
-These partial model updates are sent to the _reducer_, combining all model
-updates into a single global model update.
-Finally, the _controller's_ responsibility is to coordinate the overall
-computation and to maintain the centralized models.
+These partial model updates are then _reduced_ into a single global model and redistribured to clients for the next training round, according to a reducer protocol (currently all-reduce). Finally, the _controller's_ responsibility is to coordinate the overall
+computation and to maintain the immutable trail of global models. 
 
 The update scheme used to combine the local models into one global model is
 called [federated averaging (FedAvg)](https://arxiv.org/pdf/1602.05629.pdf),
-one of the most widely used methods for FedML.
+one of the most widely used methods for FL.
 In each round the current version of the global model is distributed to the
 clients that continue training using each their own data.
 After one local round of training the distributed clients' model-weights are
 sent back to the server that simply averages the weights, while taking the
 number of local updates into account.
 
-## Setup
+## Experimental setup
 
 With the future goal to train a large Scandinavian transformer-based language
 model, we downscale the size of the model and data to be able to efficiently
@@ -130,14 +132,14 @@ test different hyper-parameter settings.
 We choose to train a small ELECTRA model using publicly available data from the
 [OSCAR corpus](https://oscar-corpus.com/) and Wikipedia, for Swedish, and
 Norwegian _bokmål_ and _nynorsk_.
-The Swedish corpus is with 27 GB, about five times larger than the 
+The Swedish corpus is 27 GB, about five times larger than the 
 Norwegian corpus.
 This uneven distribution allows us to additionally investigate whether an LM
 built on little data can benefit from a similar language's data.
 
-Due to the rather small size of the small ELECTRA model, we were able to train
+Due to the rather small size of the ELECTRA model, we were able to train
 using standard workstation GPUs.
-Our federated setup thus consists of three workstations plugged into the same
+Our federated setup consists of three workstations plugged into the same
 network, two of which serving as local clients, doing the majority of
 computational work training the local model instances on GPU, and one
 workstation taking care of collecting, averaging, and redistributing the
@@ -148,21 +150,20 @@ correct choice of hyper-parameters, for the model as well as the optimizer.
 We follow the settings of the original small ELECTRA models in English, and
 focus only on choosing the correct federated learning strategy.
 
-In order to keep the communication overhead, that is the number of times the
-local models are centralized, as low as possible, we would like to do as many
-local model updates (i.e. gradient steps) as possible, without letting the 
-local models diverge from one another too far.
-Updating after for example 100 gradient steps will keep divergence to
-a minimum and require fewer gradient steps in total to reach convergence, but
-will, due its large communication overhead, need much longer in actual time to
-reach convergence, than models communicating their updates after every 1000
-local gradient steps.
-On the other hand, taking too many local gradient steps will manage to do more
+### Convergence as a function of local update steps 
+In order to obtain good FL performance, we need to balance communication overhead and convergence. This entails doing as many local model updates (i.e. gradient steps) as possible (more update steps means fewer global rounds), without letting the 
+local models diverge from one another too far (large divergence before aggregation leads to lower convergence rate). 
+For example, updating after 100 gradient steps will keep divergence to
+a minimum and require fewer gradient steps in total to converge, but
+will, due the the communication overhead in global rounds, need much longer actual wall-time to
+reach a certain accuracy level, compared to models communicating their updates after every 1000
+local gradient steps. On the other hand, taking too many local gradient steps will manage to do more
 gradient steps in a shorter amount of time, but need many more updates and thus
-time  to reach convergence.
+time to reach convergence.
 
-With FedAvg we generally only consider model parameters, but large transformer
-neural networks generally need more advanced optimization methods than the 
+### The role of the optimizer
+With FedAvg we typically only consider model parameters, but large transformer
+neural networks generally need more advanced optimization methods than  
 simple stochastic gradient descent.
 In most cases the _Adam_ (Adaptive Moment Estimation) optimizer is used, which 
 computes adaptive learning rates for each parameter, storing both the mean and
@@ -171,8 +172,7 @@ These additional parameters depend on the model parameters, meaning that they
 should be averaged as well and redistributed to the clients.
 This however increases the size of the data package that has to be sent by a
 factor of three, which can be significant when larger models are trained that
-"weigh" multiple gigabytes.
-We test how the development of the loss is affected by keeping the optimizer
+"weigh" multiple gigabytes. We tested how the development of the loss is affected by keeping the optimizer
 specific parameters local versus averaging them the same way as regular model
 parameters.
 
@@ -193,9 +193,8 @@ training is affected.
 
 ### Number of Local Updates
 
-In our first set of experiments we investigate how various local round lengths
-affect the training progress.
-We try four different local round lengths, with 100, 1000, 2000, and 5000 
+We investigated how various local round lengths
+affect the training progress. We tried four different local round lengths, with 100, 1000, 2000, and 5000 
 gradient steps before recombining the models.
 
 ![title](../logs/round_lengths_steps.png)
@@ -212,7 +211,7 @@ not decreasing as quickly as with for example 1000 steps per round.
 In this scenario we finally settle for 1000 steps per round, giving us the best
 speed-performance trade-off.
 With real-world models being much larger than the one used in our experiments,
-it can be interesting to change the round length during training.
+it could be interesting to change the round length during training.
 Longer round length in the beginning allows the model to see more data, while
 shorter round lengths towards the end will help the model to converge.
 
@@ -222,7 +221,7 @@ Using a more advanced optimizer such as
 [Adam](https://ruder.io/optimizing-gradient-descent/index.html#adam) is
 necessary when training models with parameters now regularly surpassing
 multiple billions.
-This means unfortunately that the number of parameters that we need to
+This unfortunately means that the number of parameters that we need to
 federate triples, which increases the communication overhead.
 In order to test whether it is enough to only federate the model parameters
 themselves while keeping the optimizer states local, we train our small
@@ -246,8 +245,6 @@ then be a better idea to change the optimization algorithm to regular
 stochastic gradient descent, to avoid faulty inputs.
 Similarly to dynamically changing the round lengths, adding a smarter
 optimization algorithm towards the end can be a possibility.
-
-
 
 ## Continuation
 
